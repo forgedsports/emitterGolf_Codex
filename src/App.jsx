@@ -11,7 +11,7 @@ export default function App() {
   const wsRef = useRef(null);
   const [logs, setLogs] = useState([]);
 
-  const addLog = log => setLogs(l => [...l, log]);
+  const addLog = log => setLogs(l => [log, ...l]);
 
   // Pass emitEvent with endpoint/type/wsRef
   const handleEmitEvent = (type, payload) => {
