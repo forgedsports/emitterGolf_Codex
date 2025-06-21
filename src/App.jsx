@@ -2,12 +2,16 @@ import React, { useState, useRef } from 'react';
 import EndpointConfig from './components/EndpointConfig';
 import ButtonEvent from './components/ButtonEvent';
 import MiniMap from './components/MiniMap';
+import LogFeed from './components/LogFeed';
 import emitEvent from './emitEvent';
 
 export default function App() {
   const [endpoint, setEndpoint] = useState('');
   const [emitType, setEmitType] = useState('websocket'); // or 'http'
   const wsRef = useRef(null);
+  const [logs, setLogs] = useState([]);
+
+  const addLog = log => setLogs(l => [...l, log]);
 
   // Pass emitEvent with endpoint/type/wsRef
   const handleEmitEvent = (type, payload) => {
@@ -17,6 +21,7 @@ export default function App() {
       endpoint,
       emitType,
       wsRef,
+      onLog: addLog,
     });
   };
 
@@ -31,6 +36,7 @@ export default function App() {
       />
       <ButtonEvent emitEvent={handleEmitEvent} />
       <MiniMap emitEvent={handleEmitEvent} />
+      <LogFeed logs={logs} />
     </div>
   );
-} 
+}
