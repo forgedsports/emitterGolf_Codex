@@ -38,6 +38,7 @@ npm run dev
 2. Deploy the contents of the `dist/` folder to your GitHub Pages branch (usually `gh-pages`).
 
    - If you haven't set up GitHub Pages yet, go to your repository settings, scroll down to the "GitHub Pages" section, and select the branch you want to deploy (e.g., `gh-pages`).
+   - When using GitHub Actions, make sure the workflow exports `GH_TOKEN` from `secrets.GITHUB_TOKEN` so the `gh-pages` CLI can authenticate.
 
 3. Your app will be available at `https://<your-username>.github.io/<your-repo-name>/`.
 
