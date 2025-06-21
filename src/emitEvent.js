@@ -1,6 +1,12 @@
-export default async function emitEvent({ eventType, payload, endpoint, emitType, wsRef }) {
+export default async function emitEvent({ eventType, payload, endpoint, emitType, wsRef, onLog }) {
   const message = { eventType, payload };
   console.log('Emit:', message, 'to', endpoint, 'via', emitType);
+  if (onLog) {
+    onLog({
+      type: 'info',
+      text: `Sending ${eventType} via ${emitType} to ${endpoint} ${JSON.stringify(payload)}`,
+    });
+  }
 
   if (!endpoint) return;
 
@@ -11,12 +17,27 @@ export default async function emitEvent({ eventType, payload, endpoint, emitType
       wsRef.current = new window.WebSocket(endpoint);
       wsRef.current.onopen = () => {
         wsRef.current.send(JSON.stringify(message));
+        onLog &&
+          onLog({
+            type: 'info',
+            text: `WebSocket sent ${JSON.stringify(message)}`,
+          });
       };
       wsRef.current.onerror = err => {
         console.warn('WebSocket error:', err);
+        onLog &&
+          onLog({
+            type: 'error',
+            text: `WebSocket error: ${err.message || err}`,
+          });
       };
     } else if (wsRef.current.readyState === 1) {
       wsRef.current.send(JSON.stringify(message));
+      onLog &&
+        onLog({
+          type: 'info',
+          text: `WebSocket sent ${JSON.stringify(message)}`,
+        });
     }
   } else if (emitType === 'http') {
     try {
@@ -25,8 +46,18 @@ export default async function emitEvent({ eventType, payload, endpoint, emitType
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(message),
       });
+      onLog &&
+        onLog({
+          type: 'info',
+          text: `HTTP POST sent ${JSON.stringify(message)}`,
+        });
     } catch (e) {
       console.warn('HTTP POST error:', e);
+      onLog &&
+        onLog({
+          type: 'error',
+          text: `HTTP POST error: ${e.message || e}`,
+        });
     }
   }
-} 
+}
