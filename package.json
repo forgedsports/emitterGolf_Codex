@@ -2,7 +2,7 @@
   "name": "emitter-golf-codex",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://forgedsports.github.io/emitterGolf_Codex",
+  "homepage": "./",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
