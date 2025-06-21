@@ -37,6 +37,12 @@ export default function App() {
       <ButtonEvent emitEvent={handleEmitEvent} />
       <MiniMap emitEvent={handleEmitEvent} />
       <LogFeed logs={logs} />
+      <p className="text-center text-xs text-gray-500">
+        Last published:{' '}
+        {import.meta.env.PUBLISH_DATETIME
+          ? new Date(import.meta.env.PUBLISH_DATETIME).toLocaleString()
+          : 'Unknown'}
+      </p>
     </div>
   );
 }

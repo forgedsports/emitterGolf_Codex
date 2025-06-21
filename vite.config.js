@@ -7,4 +7,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
-}); 
+  define: {
+    'import.meta.env.PUBLISH_DATETIME': JSON.stringify(new Date().toISOString()),
+  },
+});
