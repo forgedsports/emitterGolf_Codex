@@ -8,8 +8,8 @@ export default function EndpointConfig({
 }) {
   const placeholder =
     emitType === "websocket"
-      ? "ws://192.168.1.42:3000/ws"
-      : "https://staging.forgedsports.link/api/events/create/";
+      ? "wss://birdieboosters-production.up.railway.app"
+      : "https://birdieboosters-production.up.railway.app/api/events";
   return (
     <div className="flex flex-col sm:flex-row items-center gap-3">
       <input

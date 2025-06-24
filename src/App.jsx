@@ -5,8 +5,8 @@ import MiniMap from "./components/MiniMap";
 import LogFeed from "./components/LogFeed";
 import emitEvent from "./emitEvent";
 
-const DEFAULT_WS = "ws://192.168.1.42:3000/ws";
-const DEFAULT_HTTP = "https://staging.forgedsports.link/api/events/create/";
+const DEFAULT_WS = "wss://birdieboosters-production.up.railway.app";
+const DEFAULT_HTTP = "https://birdieboosters-production.up.railway.app/api/events";
 
 export default function App() {
   const [emitType, setEmitType] = useState("websocket");

@@ -28,7 +28,7 @@ namespace BirdieBoosters.Core
         private static GameObject messageDisplayObject;
         
         // WebSocket configuration
-        private const string WebSocketUri = "ws://192.168.1.42:3000/ws";
+        private const string WebSocketUri = "wss://birdieboosters-production.up.railway.app";
         private const int MaxMessageHistory = 5;
         private const int ReconnectDelayMs = 5000;
 
@@ -37,17 +37,24 @@ namespace BirdieBoosters.Core
         public class MobileInput
         {
             public string eventType;
-            public object payload;
+            public PayloadData payload;
         }
 
         [Serializable]
         public class PayloadData
         {
-            public float x;
-            public float y;
+            public double x;
+            public double y;
             public string button;
             public string state; // pressed, held, released
         }
+
+        private static readonly JsonSerializerSettings WebSocketJsonSettings = new JsonSerializerSettings
+        {
+            FloatParseHandling = FloatParseHandling.Double,
+            NullValueHandling = NullValueHandling.Ignore,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
 
         private void Awake()
         {
@@ -181,8 +188,8 @@ namespace BirdieBoosters.Core
             {
                 Logger.LogInfo($"[WebSocket Mod] Received: {message}");
 
-                // Parse JSON message
-                MobileInput mobileInput = JsonConvert.DeserializeObject<MobileInput>(message);
+                // Use the custom settings here
+                MobileInput mobileInput = JsonConvert.DeserializeObject<MobileInput>(message, WebSocketJsonSettings);
                 
                 if (mobileInput != null)
                 {
@@ -190,14 +197,10 @@ namespace BirdieBoosters.Core
                     
                     if (mobileInput.payload != null)
                     {
-                        var payload = JsonConvert.DeserializeObject<PayloadData>(mobileInput.payload.ToString());
-                        if (payload != null)
+                        displayMessage += $"\nX: {mobileInput.payload.x.ToString("F2")}, Y: {mobileInput.payload.y.ToString("F2")}";
+                        if (mobileInput.payload.button != null)
                         {
-                            displayMessage += $"\nX: {payload.x:F2}, Y: {payload.y:F2}";
-                            if (!string.IsNullOrEmpty(payload.button))
-                            {
-                                displayMessage += $"\nButton: {payload.button} ({payload.state})";
-                            }
+                            displayMessage += $"\nButton: {mobileInput.payload.button} ({mobileInput.payload.state})";
                         }
                     }
 
