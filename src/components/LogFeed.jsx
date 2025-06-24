@@ -21,7 +21,7 @@ function LogEntry({ log }) {
   }
 
   return (
-    <div className={`p-1 rounded ${color}`}>
+    <div className={`p-1 rounded ${color} whitespace-pre-wrap`}>
       {log.text}
       {details}
     </div>

@@ -38,9 +38,15 @@ export default async function emitEvent({
       };
       wsRef.current.onerror = err => {
         console.warn('WebSocket error:', err);
+        let errDetails = '';
+        try {
+          errDetails = JSON.stringify(err, Object.getOwnPropertyNames(err));
+        } catch (e) {
+          errDetails = String(err);
+        }
         onLog?.({
           type: 'error',
-          text: `WebSocket error: ${err.message || err}`,
+          text: `WebSocket error at ${endpoint} sending ${JSON.stringify(message)}: ${err.message || err.type || ''}\nEvent: ${errDetails}`,
           eventType,
           payload,
         });
