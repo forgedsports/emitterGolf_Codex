@@ -6,10 +6,27 @@ function clamp(val, min, max) {
 
 export default function MiniMap({ emitEvent }) {
   const mapRef = useRef(null);
+  // Map dimensions in pixels (natural size of the background image)
+  const MAP_W = 317;
+  const MAP_H = 600;
+
+  // Current hole (1-18)
+  const TOTAL_HOLES = 18;
+  const [hole, setHole] = useState(1);
+
+  const incHole = () => setHole(h => (h % TOTAL_HOLES) + 1);
+  const decHole = () => setHole(h => (h - 2 + TOTAL_HOLES) % TOTAL_HOLES + 1);
+
+  const handleHoleInput = e => {
+    const val = clamp(Number(e.target.value), 1, TOTAL_HOLES);
+    if (!Number.isNaN(val)) setHole(val);
+  };
+
   const [dragging, setDragging] = useState(false);
-  const [xy, setXY] = useState({ x: 50, y: 50 });
+  // Start roughly in the centre of the map
+  const [xy, setXY] = useState({ x: Math.round(MAP_W / 2), y: Math.round(MAP_H / 2) });
   const [liveXY, setLiveXY] = useState(null);
-  const [manual, setManual] = useState({ x: 50, y: 50 });
+  const [manual, setManual] = useState({ x: Math.round(MAP_W / 2), y: Math.round(MAP_H / 2) });
 
   const getXY = e => {
     const rect = mapRef.current.getBoundingClientRect();
@@ -21,8 +38,11 @@ export default function MiniMap({ emitEvent }) {
       clientX = e.clientX;
       clientY = e.clientY;
     }
-    let x = clamp(((clientX - rect.left) / rect.width) * 100, 0, 100);
-    let y = clamp(((clientY - rect.top) / rect.height) * 100, 0, 100);
+    // Convert the pointer position to the MAP_W x MAP_H coordinate space
+    let x = clamp(((clientX - rect.left) / rect.width) * MAP_W, 0, MAP_W);
+    // Invert Y so 0 = bottom, MAP_H = top
+    let yRatio = (clientY - rect.top) / rect.height; // 0 at top, 1 at bottom
+    let y = clamp((1 - yRatio) * MAP_H, 0, MAP_H);
     return { x: Math.round(x), y: Math.round(y) };
   };
 
@@ -57,8 +77,15 @@ export default function MiniMap({ emitEvent }) {
     <div className="flex flex-col gap-3 items-center">
       <div
         ref={mapRef}
-        className="relative bg-gray-200 rounded shadow w-full max-w-xs aspect-square touch-none select-none cursor-crosshair"
-        style={{ maxWidth: 300 }}
+        className="relative bg-gray-200 rounded shadow w-full touch-none select-none cursor-crosshair"
+        style={{
+          maxWidth: MAP_W,
+          aspectRatio: `${MAP_W} / ${MAP_H}`,
+          backgroundImage: `url(/minimap/hole${hole}map.png)`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+        }}
         onMouseDown={handleStart}
         onMouseMove={handleMove}
         onMouseUp={handleEnd}
@@ -72,13 +99,13 @@ export default function MiniMap({ emitEvent }) {
         <div
           className="absolute w-5 h-5 bg-blue-500 rounded-full border-2 border-white pointer-events-none"
           style={{
-            left: `calc(${(liveXY || xy).x}% - 10px)` ,
-            top: `calc(${(liveXY || xy).y}% - 10px)` ,
+            left: `calc(${((liveXY || xy).x / MAP_W) * 100}% - 10px)` ,
+            top: `calc(${(1 - ((liveXY || xy).y / MAP_H)) * 100}% - 10px)` ,
             transition: dragging ? 'none' : 'left 0.2s, top 0.2s',
           }}
         />
         {/* Live coords */}
-        <div className="absolute left-2 top-2 bg-white/80 rounded px-2 py-1 text-xs">
+        <div className="absolute left-2 top-2 bg-white/80 rounded px-2 py-1 text-xs whitespace-nowrap">
           X: {(liveXY || xy).x}, Y: {(liveXY || xy).y}
         </div>
       </div>
@@ -86,18 +113,18 @@ export default function MiniMap({ emitEvent }) {
         <input
           type="number"
           min={0}
-          max={100}
+          max={MAP_W}
           value={manual.x}
-          onChange={e => setManual(m => ({ ...m, x: clamp(Number(e.target.value), 0, 100) }))}
+          onChange={e => setManual(m => ({ ...m, x: clamp(Number(e.target.value), 0, MAP_W) }))}
           className="w-16 border rounded px-2 py-1 text-sm"
         />
         <span>X</span>
         <input
           type="number"
           min={0}
-          max={100}
+          max={MAP_H}
           value={manual.y}
-          onChange={e => setManual(m => ({ ...m, y: clamp(Number(e.target.value), 0, 100) }))}
+          onChange={e => setManual(m => ({ ...m, y: clamp(Number(e.target.value), 0, MAP_H) }))}
           className="w-16 border rounded px-2 py-1 text-sm"
         />
         <span>Y</span>
@@ -106,6 +133,31 @@ export default function MiniMap({ emitEvent }) {
           onClick={handleManualEmit}
         >
           Emit
+        </button>
+      </div>
+      {/* Hole selector */}
+      <div className="flex items-center gap-2">
+        <button
+          className="bg-gray-300 rounded px-2 py-1 hover:bg-gray-400"
+          onClick={decHole}
+          aria-label="Previous hole"
+        >
+          ▼
+        </button>
+        <input
+          type="number"
+          min={1}
+          max={TOTAL_HOLES}
+          value={hole}
+          onChange={handleHoleInput}
+          className="w-16 border rounded px-2 py-1 text-sm text-center"
+        />
+        <button
+          className="bg-gray-300 rounded px-2 py-1 hover:bg-gray-400"
+          onClick={incHole}
+          aria-label="Next hole"
+        >
+          ▲
         </button>
       </div>
     </div>
