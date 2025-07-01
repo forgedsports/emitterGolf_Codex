@@ -81,7 +81,7 @@ export default function MiniMap({ emitEvent }) {
         style={{
           maxWidth: MAP_W,
           aspectRatio: `${MAP_W} / ${MAP_H}`,
-          backgroundImage: `url(/minimap/hole${hole}map.png)`,
+          backgroundImage: `url(${import.meta.env.BASE_URL}minimap/hole${hole}map.png)`,
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
