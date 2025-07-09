@@ -15,6 +15,7 @@ export default function App() {
   const [httpEndpoint, setHttpEndpoint] = useState(DEFAULT_HTTP);
   const wsRef = useRef(null);
   const [logs, setLogs] = useState([]);
+  const [selectedEmoji, setSelectedEmoji] = useState(null);
 
   const addLog = (log) => setLogs((l) => [log, ...l]);
 
@@ -30,9 +31,15 @@ export default function App() {
 
   // Pass emitEvent with endpoint/type/wsRef
   const handleEmitEvent = (type, payload) => {
+    // Add emoji to all payloads
+    const payloadWithEmoji = {
+      ...payload,
+      emote: selectedEmoji || 'none'
+    };
+    
     emitEvent({
       eventType: type,
-      payload,
+      payload: payloadWithEmoji,
       endpoint: currentEndpoint,
       emitType,
       wsRef,
@@ -50,7 +57,7 @@ export default function App() {
         setEmitType={setEmitType}
       />
       <ButtonEvent emitEvent={handleEmitEvent} />
-      <EmojiSelector emitEvent={handleEmitEvent} />
+      <EmojiSelector selectedEmoji={selectedEmoji} onEmojiSelect={setSelectedEmoji} />
       <MiniMap emitEvent={handleEmitEvent} />
       <LogFeed logs={logs} />
       <p className="text-center text-xs text-gray-500">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const EMOJIS = [
   { emoji: '💩', value: 'poop' },
@@ -7,18 +7,14 @@ const EMOJIS = [
   { emoji: '❤️', value: 'heart' }
 ];
 
-export default function EmojiSelector({ emitEvent }) {
-  const [selectedEmoji, setSelectedEmoji] = useState(null);
-
+export default function EmojiSelector({ selectedEmoji, onEmojiSelect }) {
   const handleEmojiClick = (emojiData) => {
     if (selectedEmoji === emojiData.value) {
       // Unselect if clicking the same emoji
-      setSelectedEmoji(null);
-      emitEvent('emote', 'none');
+      onEmojiSelect(null);
     } else {
       // Select new emoji
-      setSelectedEmoji(emojiData.value);
-      emitEvent('emote', emojiData.value);
+      onEmojiSelect(emojiData.value);
     }
   };
 
