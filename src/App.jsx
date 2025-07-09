@@ -3,6 +3,7 @@ import EndpointConfig from "./components/EndpointConfig";
 import ButtonEvent from "./components/ButtonEvent";
 import MiniMap from "./components/MiniMap";
 import LogFeed from "./components/LogFeed";
+import EmojiSelector from "./components/EmojiSelector";
 import emitEvent from "./emitEvent";
 
 const DEFAULT_WS = "wss://birdieboosters-production.up.railway.app";
@@ -49,6 +50,7 @@ export default function App() {
         setEmitType={setEmitType}
       />
       <ButtonEvent emitEvent={handleEmitEvent} />
+      <EmojiSelector emitEvent={handleEmitEvent} />
       <MiniMap emitEvent={handleEmitEvent} />
       <LogFeed logs={logs} />
       <p className="text-center text-xs text-gray-500">
