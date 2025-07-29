@@ -28,7 +28,7 @@ namespace BirdieBoosters.Core
         private static GameObject messageDisplayObject;
         
         // WebSocket configuration
-        private const string WebSocketUri = "wss://birdieboosters-production.up.railway.app";
+        private const string WebSocketUri = "wss://birdieboosters-production-8e42.up.railway.app";
         private const int MaxMessageHistory = 5;
         private const int ReconnectDelayMs = 5000;
 
