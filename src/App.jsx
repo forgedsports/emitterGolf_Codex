@@ -6,7 +6,7 @@ import LogFeed from "./components/LogFeed";
 import EmojiSelector from "./components/EmojiSelector";
 import emitEvent from "./emitEvent";
 
-const DEFAULT_WS = "wss://birdiebobirdieboosters-production-8e42.up.railway.app";
+const DEFAULT_WS = "wss://birdieboosters-production-8e42.up.railway.app";
 const DEFAULT_HTTP = "https://birdieboosters-production-8e42.up.railway.app/api/events";
 
 export default function App() {
