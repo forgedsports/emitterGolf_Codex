@@ -1,0 +1,7 @@
+{
+  "Name": "Standard",
+  "Description": "Classic 10-frame bowling with normal scoring rules.",
+  "FrameCount": 10,
+  "PinsPerFrame": 10,
+  "ExtraSpareBonus": 0
+}

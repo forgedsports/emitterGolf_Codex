@@ -1,0 +1,7 @@
+{
+  "Name": "Spare Frenzy",
+  "Description": "Five fast frames and spares are worth an extra five bonus points.",
+  "FrameCount": 5,
+  "PinsPerFrame": 10,
+  "ExtraSpareBonus": 5
+}
